@@ -17,7 +17,7 @@
               <td>{{product.product_price}}</td>
               <td>{{product.company_name}}</td>
               <td>
-                <a class="btn btn-info text-light">Read</a>
+                <a v-on:click="selectProduct(product)" class="btn btn-info text-light" data-toggle="modal" data-target="#read_product">Read</a>
                 <a class="btn btn-primary text-light">Update</a>
                 <a class="btn btn-danger text-light">Delete</a>
               </td>
@@ -36,10 +36,14 @@
             <a v-on:click="loadProducts(total_pages)" class="page-link">Last</a>
           </li>
         </ul>
+
+        <product-modals></product-modals>
     </div>
 </template>
 
 <script>
+import {EventBus} from "../event-bus.js";
+
 export default {
   created: function () {  // INIT
     this.path = window.location.pathname;
@@ -119,6 +123,11 @@ export default {
     /* CHECK: If is the current page */
     isCurrentPage(page) {
       return (page == this.current_page);
+    },
+
+    /* SET: Product to read to the modal */
+    selectProduct(product) {
+      EventBus.$emit('select_product', product);
     }
   }
 };

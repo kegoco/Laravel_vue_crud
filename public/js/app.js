@@ -13886,8 +13886,9 @@ module.exports = __webpack_require__(45);
 
 /***/ }),
 /* 12 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 
 /**
  * First we will load all of this project's JavaScript dependencies which
@@ -13909,6 +13910,7 @@ window.VueResource = __webpack_require__(39);
  */
 
 Vue.component('products-component', __webpack_require__(41));
+Vue.component('product-modals', __webpack_require__(50));
 
 // const files = require.context('./', true, /\.vue$/i)
 
@@ -48932,6 +48934,7 @@ module.exports = function normalizeComponent (
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event_bus_js__ = __webpack_require__(53);
 //
 //
 //
@@ -48973,6 +48976,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
@@ -49058,6 +49065,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     /* CHECK: If is the current page */
     isCurrentPage: function isCurrentPage(page) {
       return page == this.current_page;
+    },
+
+
+    /* SET: Product to read to the modal */
+    selectProduct: function selectProduct(product) {
+      __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$emit('select_product', product);
     }
   }
 });
@@ -49070,87 +49083,118 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("table", { staticClass: "table" }, [
-      _vm._m(0),
+  return _c(
+    "div",
+    [
+      _c("table", { staticClass: "table" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "tbody",
+          _vm._l(_vm.products, function(product) {
+            return _c("tr", { key: product.product_id }, [
+              _c("td", [_vm._v(_vm._s(product.product_name))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(product.product_description))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(product.product_price))]),
+              _vm._v(" "),
+              _c("td", [_vm._v(_vm._s(product.company_name))]),
+              _vm._v(" "),
+              _c("td", [
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-info text-light",
+                    attrs: {
+                      "data-toggle": "modal",
+                      "data-target": "#read_product"
+                    },
+                    on: {
+                      click: function($event) {
+                        _vm.selectProduct(product)
+                      }
+                    }
+                  },
+                  [_vm._v("Read")]
+                ),
+                _vm._v(" "),
+                _c("a", { staticClass: "btn btn-primary text-light" }, [
+                  _vm._v("Update")
+                ]),
+                _vm._v(" "),
+                _c("a", { staticClass: "btn btn-danger text-light" }, [
+                  _vm._v("Delete")
+                ])
+              ])
+            ])
+          })
+        )
+      ]),
       _vm._v(" "),
       _c(
-        "tbody",
-        _vm._l(_vm.products, function(product) {
-          return _c("tr", { key: product.product_id }, [
-            _c("td", [_vm._v(_vm._s(product.product_name))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(product.product_description))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(product.product_price))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(product.company_name))]),
-            _vm._v(" "),
-            _vm._m(1, true)
-          ])
-        })
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "ul",
-      { staticClass: "pagination" },
-      [
-        _vm.current_page > 1
-          ? _c("li", { staticClass: "page-item" }, [
+        "ul",
+        { staticClass: "pagination" },
+        [
+          _vm.current_page > 1
+            ? _c("li", { staticClass: "page-item" }, [
+                _c(
+                  "a",
+                  {
+                    staticClass: "page-link",
+                    on: {
+                      click: function($event) {
+                        _vm.loadProducts(1)
+                      }
+                    }
+                  },
+                  [_vm._v("First")]
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm._l(_vm.pages, function(page) {
+            return _c("li", { key: page, staticClass: "page-item" }, [
               _c(
                 "a",
                 {
                   staticClass: "page-link",
+                  class: { "text-primary": _vm.isCurrentPage(page) },
                   on: {
                     click: function($event) {
-                      _vm.loadProducts(1)
+                      _vm.loadProducts(page)
                     }
                   }
                 },
-                [_vm._v("First")]
+                [_vm._v(_vm._s(page))]
               )
             ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm._l(_vm.pages, function(page) {
-          return _c("li", { key: page, staticClass: "page-item" }, [
-            _c(
-              "a",
-              {
-                staticClass: "page-link",
-                class: { "text-primary": _vm.isCurrentPage(page) },
-                on: {
-                  click: function($event) {
-                    _vm.loadProducts(page)
-                  }
-                }
-              },
-              [_vm._v(_vm._s(page))]
-            )
-          ])
-        }),
-        _vm._v(" "),
-        _vm.current_page < _vm.total_pages
-          ? _c("li", { staticClass: "page-item" }, [
-              _c(
-                "a",
-                {
-                  staticClass: "page-link",
-                  on: {
-                    click: function($event) {
-                      _vm.loadProducts(_vm.total_pages)
+          }),
+          _vm._v(" "),
+          _vm.current_page < _vm.total_pages
+            ? _c("li", { staticClass: "page-item" }, [
+                _c(
+                  "a",
+                  {
+                    staticClass: "page-link",
+                    on: {
+                      click: function($event) {
+                        _vm.loadProducts(_vm.total_pages)
+                      }
                     }
-                  }
-                },
-                [_vm._v("Last")]
-              )
-            ])
-          : _vm._e()
-      ],
-      2
-    )
-  ])
+                  },
+                  [_vm._v("Last")]
+                )
+              ])
+            : _vm._e()
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c("product-modals")
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -49170,20 +49214,6 @@ var staticRenderFns = [
         _c("th", [_vm._v("Actions")])
       ])
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("a", { staticClass: "btn btn-info text-light" }, [_vm._v("Read")]),
-      _vm._v(" "),
-      _c("a", { staticClass: "btn btn-primary text-light" }, [
-        _vm._v("Update")
-      ]),
-      _vm._v(" "),
-      _c("a", { staticClass: "btn btn-danger text-light" }, [_vm._v("Delete")])
-    ])
   }
 ]
 render._withStripped = true
@@ -49200,6 +49230,191 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 46 */,
+/* 47 */,
+/* 48 */,
+/* 49 */,
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(42)
+/* script */
+var __vue_script__ = __webpack_require__(51)
+/* template */
+var __vue_template__ = __webpack_require__(52)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/ProductModals.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-73a8de5a", Component.options)
+  } else {
+    hotAPI.reload("data-v-73a8de5a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event_bus_js__ = __webpack_require__(53);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    var _this = this;
+
+    // INIT
+    __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$on('select_product', function (product) {
+      _this.product = product;
+    });
+  },
+  data: function data() {
+    // VARS
+    return {
+      product: {}
+    };
+  },
+
+  methods: {// METHODS
+
+  }
+});
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "container-fluid" }, [
+    _c(
+      "div",
+      {
+        staticClass: "modal right fade",
+        attrs: { id: "read_product", role: "dialog" }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c("h2", [_vm._v(_vm._s(_vm.product.product_name))]),
+              _vm._v(" "),
+              _vm._m(0)
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "modal-body" }),
+            _vm._v(" "),
+            _vm._m(1)
+          ])
+        ])
+      ]
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass: "close",
+        attrs: { type: "button", "data-dismiss": "modal" }
+      },
+      [_c("span", [_vm._v("×")])]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c("input", {
+        staticClass: "btn btn-primary",
+        attrs: { type: "submit", value: "Guardar" }
+      })
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-73a8de5a", module.exports)
+  }
+}
+
+/***/ }),
+/* 53 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EventBus; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
+
+
+var EventBus = new __WEBPACK_IMPORTED_MODULE_0_vue___default.a();
 
 /***/ })
 /******/ ]);

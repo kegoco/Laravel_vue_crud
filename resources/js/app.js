@@ -19,6 +19,7 @@ window.VueResource = require('vue-resource');
  */
 
 Vue.component('products-component', require('./components/ProductsCompotent.vue'));
+Vue.component('product-modals', require('./components/ProductModals.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 
