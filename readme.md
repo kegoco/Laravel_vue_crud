@@ -1,14 +1,18 @@
 <h1>After clone or download repository</h1>
-<p>To execute this crud after download it we need open the system console in the project path and execute:</p>
+<p>1.- To execute this crud after download it we need open the system console in the project path and execute:</p>
 <ul>
     <li>composer install</li>
     <li>npm install</li>
 </ul>
-<p>After, we need rename the ".env.example" file by ".env" on the root path with this content:</p>
-<p>And finaly, we need to open the root path project on the system console and execute:</p>
+<p>2.- We need rename the ".env.example" file by ".env" on the root path with this content:</p>
+<p>3.- we need to open the root path project on the system console and execute:</p>
 <ul>
     <li>php artisan key:generate</li>
 </ul>
+<p>4.- Finally, we need import "laravel_crud.sql" file (this file is in the project root path) to our MYSQL server.</p>
+</br>
+<b>Notes</b>
+<p>- Probably, you need to change the MYSQL config data on the .env file depending of your configuration.</p>
 
 
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
