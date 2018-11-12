@@ -46,15 +46,11 @@ import {EventBus} from "../event-bus.js";
 
 export default {
   created: function () {  // INIT
-    this.path = window.location.pathname;
     this.countAllProducts();
     console.log("Product Component started");
   },
   data() {  // VARS
     return {
-      // Current path
-      path: "",
-
       // Products vars
       products: [],
 
@@ -70,7 +66,7 @@ export default {
 
     /* GET: The total of products */
     countAllProducts() {
-      this.$http.get(this.path + "/countAllProducts").then(
+      this.$http.get(this.$root.getCurrentPath() + "/countAllProducts").then(  // "this.$root.getCurrentPath()" calls to "app" Vue.
         function(response) {  // Success
           var count_products = response.data;
           this.total_pages = Math.ceil(count_products / this.product_by_page);
@@ -94,7 +90,7 @@ export default {
         "X-CSRF-TOKEN": document.head.querySelector('meta[name="csrf-token"]').content
       }
 
-      this.$http.post(this.path + "/getProducts", data, {headers: headers}).then(
+      this.$http.post(this.$root.getCurrentPath() + "/getProducts", data, {headers: headers}).then(
         function(response) {  // Success
           this.products = response.data;
           console.log(this.products);

@@ -33,6 +33,12 @@ Vue.component('product-modals', require('./components/ProductModals.vue'));
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-const app = new Vue({
-    el: '#app'
+export const app = new Vue({
+    el: '#app',
+    methods: {
+        /* GET: Current path */
+        getCurrentPath: function () {
+            return window.location.pathname;
+        }
+    },
 });
