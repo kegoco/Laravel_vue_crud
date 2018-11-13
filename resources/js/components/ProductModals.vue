@@ -10,10 +10,25 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>Description</td>
+                                    <td>{{ product.product_description }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Price</td>
+                                    <td>{{ product.product_price }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Company</td>
+                                    <td>{{ product.company_name }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" class="btn btn-primary" value="Guardar">
+                        <input type="submit" class="btn btn-primary close" data-dismiss="modal" value="Close">
                     </div>
                 </div>
             </div>

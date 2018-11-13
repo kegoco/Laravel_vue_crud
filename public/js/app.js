@@ -49022,8 +49022,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
 
-  methods: {
-    // METHODS
+  methods: { // METHODS
 
     /* GET: The total of products */
     countAllProducts: function countAllProducts() {
@@ -49038,7 +49037,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         console.error(response);
       });
     },
-
 
     /* GET: A specify range of products */
     loadProducts: function loadProducts(page) {
@@ -49063,7 +49061,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
 
-
     /* UPDATE: The current page */
     refreshPaging: function refreshPaging() {
       this.pages = [];
@@ -49078,12 +49075,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
     },
 
-
     /* CHECK: If is the current page */
     isCurrentPage: function isCurrentPage(page) {
       return page == this.current_page;
     },
-
 
     /* SET: Product to read to the modal */
     selectProduct: function selectProduct(product) {
@@ -49319,6 +49314,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -49367,7 +49377,29 @@ var render = function() {
               _vm._m(0)
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "modal-body" }),
+            _c("div", { staticClass: "modal-body" }, [
+              _c("table", { staticClass: "table" }, [
+                _c("tbody", [
+                  _c("tr", [
+                    _c("td", [_vm._v("Description")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(_vm.product.product_description))])
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("td", [_vm._v("Price")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(_vm.product.product_price))])
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("td", [_vm._v("Company")]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(_vm.product.company_name))])
+                  ])
+                ])
+              ])
+            ]),
             _vm._v(" "),
             _vm._m(1)
           ])
@@ -49396,8 +49428,8 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "modal-footer" }, [
       _c("input", {
-        staticClass: "btn btn-primary",
-        attrs: { type: "submit", value: "Guardar" }
+        staticClass: "btn btn-primary close",
+        attrs: { type: "submit", "data-dismiss": "modal", value: "Close" }
       })
     ])
   }

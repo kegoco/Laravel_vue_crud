@@ -65,7 +65,7 @@ export default {
   methods: {  // METHODS
 
     /* GET: The total of products */
-    countAllProducts() {
+    countAllProducts: function () {
       this.$http.get(this.$root.getCurrentPath() + "/countAllProducts").then(  // "this.$root.getCurrentPath()" calls to "app" Vue.
         function(response) {  // Success
           var count_products = response.data;
@@ -79,7 +79,7 @@ export default {
     },
 
     /* GET: A specify range of products */
-    loadProducts(page) {
+    loadProducts: function (page) {
       this.current_page = page;
 
       var data = {
@@ -103,7 +103,7 @@ export default {
     },
 
     /* UPDATE: The current page */
-    refreshPaging() {
+    refreshPaging: function () {
       this.pages = [];
 
       var initial_num = this.current_page - this.range_page;
@@ -117,12 +117,12 @@ export default {
     },
 
     /* CHECK: If is the current page */
-    isCurrentPage(page) {
+    isCurrentPage: function (page) {
       return (page == this.current_page);
     },
 
     /* SET: Product to read to the modal */
-    selectProduct(product) {
+    selectProduct: function (product) {
       EventBus.$emit('select_product', product);
     }
   }
