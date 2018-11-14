@@ -17,12 +17,16 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app" class="container">
-        <div class="page-header">
-            <h1>{{ $title_page }}</h1>
+    <div id="app">
+        <div class="container">
+            <div class="page-header">
+                <h1>{{ $title_page }}</h1>
+            </div>
+            
+            @yield('content')
         </div>
         
-        @yield('content')
+        <loading-screen v-if="this.$root.isLoading"></loading-screen>
     </div>
 
     <!-- Scripts -->

@@ -38,7 +38,7 @@
         </ul>
 
         <button class="btn btn-success" v-on:click="downloadProducts">Download products</button>
-
+        
         <product-modals></product-modals>
     </div>
 </template>
@@ -130,6 +130,8 @@ export default {
 
     /* DOWNLOAD: All products in a .csv file */
     downloadProducts: function () {
+      this.$root.isLoading = true;
+
       this.$http.get(this.$root.getCurrentPath() + "/getAllProducts").then(
         function(response) {  // Success
           this.generateCsvFile(response.data);
@@ -160,6 +162,8 @@ export default {
       document.body.appendChild(downloadLink);
       downloadLink.click();  // It will download the generated file
       downloadLink.remove();  // Remove the link from the body
+
+      this.$root.isLoading = false;
     }
   }
 };

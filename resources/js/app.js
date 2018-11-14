@@ -20,6 +20,7 @@ window.VueResource = require('vue-resource');
 
 Vue.component('products-component', require('./components/ProductsCompotent.vue'));
 Vue.component('product-modals', require('./components/ProductModals.vue'));
+Vue.component('loading-screen', require('./components/LoadingScreen.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 
@@ -35,6 +36,9 @@ Vue.component('product-modals', require('./components/ProductModals.vue'));
 
 export const app = new Vue({
     el: '#app',
+    data: {
+        isLoading: false
+    },
     methods: {
         /* GET: Current path */
         getCurrentPath: function () {
