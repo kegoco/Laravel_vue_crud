@@ -48998,6 +48998,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 
 
@@ -49083,6 +49085,38 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     /* SET: Product to read to the modal */
     selectProduct: function selectProduct(product) {
       __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$emit('select_product', product);
+    },
+
+    /* DOWNLOAD: All products in a .csv file */
+    downloadProducts: function downloadProducts() {
+      this.$http.get(this.$root.getCurrentPath() + "/getAllProducts").then(function (response) {
+        // Success
+        this.generateCsvFile(response.data);
+      }, function (response) {
+        // Error
+        console.error(response);
+      });
+    },
+
+    /* GENERATE: Csv file */
+    generateCsvFile: function generateCsvFile(data) {
+      // Generate csv content data:
+      var csvData = "data:text/csv;charset=utf-8,";
+      csvData += "Product name,Product description,Product price,Company name\n";
+      data.forEach(function (element) {
+        csvData += element.product_name + "," + element.product_description + "," + element.product_price + "," + element.company_name + "\n";
+      });
+
+      // Generate the link to download the csv file:
+      var encodedURI = encodeURI(csvData);
+      var downloadLink = document.createElement("a");
+      var date = new Date();
+      var fileName = "products_" + date.toLocaleDateString() + "_" + date.toLocaleTimeString() + ".csv";
+      downloadLink.setAttribute("href", encodedURI);
+      downloadLink.setAttribute("download", fileName); // Set the name of file
+      document.body.appendChild(downloadLink);
+      downloadLink.click(); // It will download the generated file
+      downloadLink.remove(); // Remove the link from the body
     }
   }
 });
@@ -49201,6 +49235,12 @@ var render = function() {
             : _vm._e()
         ],
         2
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        { staticClass: "btn btn-success", on: { click: _vm.downloadProducts } },
+        [_vm._v("Download products")]
       ),
       _vm._v(" "),
       _c("product-modals")

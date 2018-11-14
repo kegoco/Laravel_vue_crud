@@ -37,6 +37,8 @@
           </li>
         </ul>
 
+        <button class="btn btn-success" v-on:click="downloadProducts">Download products</button>
+
         <product-modals></product-modals>
     </div>
 </template>
@@ -124,6 +126,40 @@ export default {
     /* SET: Product to read to the modal */
     selectProduct: function (product) {
       EventBus.$emit('select_product', product);
+    },
+
+    /* DOWNLOAD: All products in a .csv file */
+    downloadProducts: function () {
+      this.$http.get(this.$root.getCurrentPath() + "/getAllProducts").then(
+        function(response) {  // Success
+          this.generateCsvFile(response.data);
+        },
+        function(response) {  // Error
+          console.error(response);
+        }
+      );
+    },
+
+    /* GENERATE: Csv file */
+    generateCsvFile: function (data) {
+      // Generate csv content data:
+      var csvData = "data:text/csv;charset=utf-8,";
+      csvData += "Product name,Product description,Product price,Company name\n";
+      data.forEach(element => {
+        csvData += element.product_name + "," + element.product_description 
+            + "," + element.product_price + "," + element.company_name + "\n";
+      });
+
+      // Generate the link to download the csv file:
+      var encodedURI = encodeURI(csvData);
+      var downloadLink = document.createElement("a");
+      var date = new Date();
+      var fileName = "products_" + date.toLocaleDateString() + "_" + date.toLocaleTimeString() + ".csv";
+      downloadLink.setAttribute("href", encodedURI);
+      downloadLink.setAttribute("download", fileName);  // Set the name of file
+      document.body.appendChild(downloadLink);
+      downloadLink.click();  // It will download the generated file
+      downloadLink.remove();  // Remove the link from the body
     }
   }
 };

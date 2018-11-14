@@ -18,3 +18,4 @@ Route::get("/", function () {
 Route::get("/products", "ProductController@index")->name("products");
 Route::post("/products/getProducts", "ProductController@getProducts");
 Route::get("/products/countAllProducts", "ProductController@countAllProducts");
+Route::get("/products/getAllProducts", "ProductController@getAllProducts");

@@ -34,4 +34,16 @@ class ProductController extends Controller
     public function countAllProducts() {
         return Product::get()->count();
     }
+
+    public function getAllProducts() {
+        return Product::leftjoin("COMPANIES as cmp","cmp.company_id", "=", "PRODUCTS.company_id")
+            ->orderBy("product_name", "asc")
+            ->get([
+                "product_id",
+                "product_name",
+                "product_description",
+                "product_price",
+                "cmp.company_name"
+            ]);
+    }
 }
