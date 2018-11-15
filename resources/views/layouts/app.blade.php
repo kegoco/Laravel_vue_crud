@@ -25,8 +25,6 @@
             
             @yield('content')
         </div>
-        
-        <loading-screen v-if="this.$root.isLoading"></loading-screen>
     </div>
 
     <!-- Scripts -->

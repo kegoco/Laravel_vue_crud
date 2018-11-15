@@ -1,5 +1,15 @@
 <template>
     <div>
+        <div class="input-group col-md-5">
+          <input type="text" class="form-control">
+          <div class="input-group-btn">
+            <button class="btn btn-primary" type="submit">
+              <span class="glyphicon glyphicon-search">search</span>
+            </button>
+          </div>
+          
+        </div>
+
         <table class="table">
           <thead>
             <tr>
@@ -37,7 +47,11 @@
           </li>
         </ul>
 
-        <button class="btn btn-success" v-on:click="downloadProducts">Download products</button>
+        <button class="btn btn-success" v-on:click="downloadProducts">
+          <span v-if="!this.$root.isLoading">Download products</span>
+          <span v-if="this.$root.isLoading">Downloading products</span>
+          <loading-screen-button class="d-inline" v-if="this.$root.isLoading"></loading-screen-button>
+        </button>
         
         <product-modals></product-modals>
     </div>
