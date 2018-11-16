@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="input-group col-md-5">
-          <input type="text" class="form-control" placeholder="Search..." v-model="filter">
+          <input type="text" class="form-control" placeholder="Search..." v-model="filter" v-on:keyup.enter="searchProducts">
           <div class="input-group-append">
             <button class="btn btn-primary" type="button" v-on:click="searchProducts">
               <!-- <span class="glyphicon glyphicon-search"></span> -->
