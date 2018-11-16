@@ -17,5 +17,5 @@ Route::get("/", function () {
 
 Route::get("/products", "ProductController@index")->name("products");
 Route::post("/products/getProducts", "ProductController@getProducts");
-Route::get("/products/countAllProducts", "ProductController@countAllProducts");
-Route::get("/products/getAllProducts", "ProductController@getAllProducts");
+Route::post("/products/countAllProducts", "ProductController@countAllProducts");
+Route::post("/products/getAllProducts", "ProductController@getAllProducts");

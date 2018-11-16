@@ -1,9 +1,9 @@
 <template>
     <div>
         <div class="input-group col-md-5">
-          <input type="text" class="form-control" placeholder="Search...">
+          <input type="text" class="form-control" placeholder="Search..." v-model="filter">
           <div class="input-group-append">
-            <button class="btn btn-primary" type="button">
+            <button class="btn btn-primary" type="button" v-on:click="searchProducts">
               <!-- <span class="glyphicon glyphicon-search"></span> -->
               <i class="fas fa-search"></i>
             </button>
@@ -75,18 +75,26 @@ export default {
       product_by_page: 5,
       range_page: 3,
       current_page: 1,
-      total_pages: 0
+      total_pages: 0,
+      filter: ""
     }
   },
   methods: {  // METHODS
 
     /* GET: The total of products */
     countAllProducts: function () {
-      this.$http.get(this.$root.getCurrentPath() + "/countAllProducts").then(  // "this.$root.getCurrentPath()" calls to "app" Vue.
+      var data = {
+        filter: this.filter
+      };
+      var headers = {
+        "X-CSRF-TOKEN": this.$root.token
+      }
+
+      this.$http.post(this.$root.getCurrentPath() + "/countAllProducts", data, {headers: headers}).then(  // "this.$root.getCurrentPath()" calls to "app" Vue.
         function(response) {  // Success
           var count_products = response.data;
           this.total_pages = Math.ceil(count_products / this.product_by_page);
-          this.loadProducts(this.current_page);  // Load the products by first time
+          this.loadProducts();  // Load the products by first time
         },
         function(response) {  // Error
           console.error(response);
@@ -96,14 +104,15 @@ export default {
 
     /* GET: A specify range of products */
     loadProducts: function (page) {
-      this.current_page = page;
+      if (page != undefined) this.current_page = page;
 
       var data = {
         offset: (this.product_by_page * page) - this.product_by_page,
-        limit: this.product_by_page
+        limit: this.product_by_page,
+        filter: this.filter
       };
       var headers = {
-        "X-CSRF-TOKEN": document.head.querySelector('meta[name="csrf-token"]').content
+        "X-CSRF-TOKEN": this.$root.token
       }
 
       this.$http.post(this.$root.getCurrentPath() + "/getProducts", data, {headers: headers}).then(
@@ -146,7 +155,14 @@ export default {
     downloadProducts: function () {
       this.$root.isLoading = true;
 
-      this.$http.get(this.$root.getCurrentPath() + "/getAllProducts").then(
+      var data = {
+        filter: this.filter
+      };
+      var headers = {
+        "X-CSRF-TOKEN": this.$root.token
+      }
+
+      this.$http.post(this.$root.getCurrentPath() + "/getAllProducts", data, {headers: headers}).then(
         function(response) {  // Success
           this.generateCsvFile(response.data);
         },
@@ -178,6 +194,12 @@ export default {
       downloadLink.remove();  // Remove the link from the body
 
       this.$root.isLoading = false;
+    },
+
+    /* GET: All products finding by the filter */
+    searchProducts: function () {
+      this.current_page = 1;
+      this.countAllProducts();
     }
   }
 };

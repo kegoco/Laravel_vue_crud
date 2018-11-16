@@ -37,7 +37,8 @@ Vue.component('loading-screen-button', require('./components/LoadingScreenButton
 export const app = new Vue({
     el: '#app',
     data: {
-        isLoading: false
+        isLoading: false,
+        token: document.head.querySelector('meta[name="csrf-token"]').content
     },
     methods: {
         /* GET: Current path */

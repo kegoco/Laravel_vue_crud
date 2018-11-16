@@ -25017,7 +25017,8 @@ Vue.component('loading-screen-button', __webpack_require__(49));
 var app = new Vue({
     el: '#app',
     data: {
-        isLoading: false
+        isLoading: false,
+        token: document.head.querySelector('meta[name="csrf-token"]').content
     },
     methods: {
         /* GET: Current path */
@@ -49038,7 +49039,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       product_by_page: 5,
       range_page: 3,
       current_page: 1,
-      total_pages: 0
+      total_pages: 0,
+      filter: ""
     };
   },
 
@@ -49046,12 +49048,19 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     /* GET: The total of products */
     countAllProducts: function countAllProducts() {
-      this.$http.get(this.$root.getCurrentPath() + "/countAllProducts").then( // "this.$root.getCurrentPath()" calls to "app" Vue.
+      var data = {
+        filter: this.filter
+      };
+      var headers = {
+        "X-CSRF-TOKEN": this.$root.token
+      };
+
+      this.$http.post(this.$root.getCurrentPath() + "/countAllProducts", data, { headers: headers }).then( // "this.$root.getCurrentPath()" calls to "app" Vue.
       function (response) {
         // Success
         var count_products = response.data;
         this.total_pages = Math.ceil(count_products / this.product_by_page);
-        this.loadProducts(this.current_page); // Load the products by first time
+        this.loadProducts(); // Load the products by first time
       }, function (response) {
         // Error
         console.error(response);
@@ -49060,14 +49069,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     /* GET: A specify range of products */
     loadProducts: function loadProducts(page) {
-      this.current_page = page;
+      if (page != undefined) this.current_page = page;
 
       var data = {
         offset: this.product_by_page * page - this.product_by_page,
-        limit: this.product_by_page
+        limit: this.product_by_page,
+        filter: this.filter
       };
       var headers = {
-        "X-CSRF-TOKEN": document.head.querySelector('meta[name="csrf-token"]').content
+        "X-CSRF-TOKEN": this.$root.token
       };
 
       this.$http.post(this.$root.getCurrentPath() + "/getProducts", data, { headers: headers }).then(function (response) {
@@ -49109,7 +49119,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     downloadProducts: function downloadProducts() {
       this.$root.isLoading = true;
 
-      this.$http.get(this.$root.getCurrentPath() + "/getAllProducts").then(function (response) {
+      var data = {
+        filter: this.filter
+      };
+      var headers = {
+        "X-CSRF-TOKEN": this.$root.token
+      };
+
+      this.$http.post(this.$root.getCurrentPath() + "/getAllProducts", data, { headers: headers }).then(function (response) {
         // Success
         this.generateCsvFile(response.data);
       }, function (response) {
@@ -49139,6 +49156,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       downloadLink.remove(); // Remove the link from the body
 
       this.$root.isLoading = false;
+    },
+
+    /* GET: All products finding by the filter */
+    searchProducts: function searchProducts() {
+      this.current_page = 1;
+      this.countAllProducts();
     }
   }
 });
@@ -49154,10 +49177,44 @@ var render = function() {
   return _c(
     "div",
     [
-      _vm._m(0),
+      _c("div", { staticClass: "input-group col-md-5" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.filter,
+              expression: "filter"
+            }
+          ],
+          staticClass: "form-control",
+          attrs: { type: "text", placeholder: "Search..." },
+          domProps: { value: _vm.filter },
+          on: {
+            input: function($event) {
+              if ($event.target.composing) {
+                return
+              }
+              _vm.filter = $event.target.value
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("div", { staticClass: "input-group-append" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-primary",
+              attrs: { type: "button" },
+              on: { click: _vm.searchProducts }
+            },
+            [_c("i", { staticClass: "fas fa-search" })]
+          )
+        ])
+      ]),
       _vm._v(" "),
       _c("table", { staticClass: "table" }, [
-        _vm._m(1),
+        _vm._m(0),
         _vm._v(" "),
         _c(
           "tbody",
@@ -49286,25 +49343,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "input-group col-md-5" }, [
-      _c("input", {
-        staticClass: "form-control",
-        attrs: { type: "text", placeholder: "Search..." }
-      }),
-      _vm._v(" "),
-      _c("div", { staticClass: "input-group-append" }, [
-        _c(
-          "button",
-          { staticClass: "btn btn-primary", attrs: { type: "button" } },
-          [_c("i", { staticClass: "fas fa-search" })]
-        )
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
