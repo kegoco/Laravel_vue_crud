@@ -1,13 +1,13 @@
 <template>
     <div>
         <div class="input-group col-md-5">
-          <input type="text" class="form-control">
-          <div class="input-group-btn">
-            <button class="btn btn-primary" type="submit">
-              <span class="glyphicon glyphicon-search">search</span>
+          <input type="text" class="form-control" placeholder="Search...">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button">
+              <!-- <span class="glyphicon glyphicon-search"></span> -->
+              <i class="fas fa-search"></i>
             </button>
           </div>
-          
         </div>
 
         <table class="table">

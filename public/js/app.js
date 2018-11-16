@@ -49291,17 +49291,16 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "input-group col-md-5" }, [
-      _c("input", { staticClass: "form-control", attrs: { type: "text" } }),
+      _c("input", {
+        staticClass: "form-control",
+        attrs: { type: "text", placeholder: "Search..." }
+      }),
       _vm._v(" "),
-      _c("div", { staticClass: "input-group-btn" }, [
+      _c("div", { staticClass: "input-group-append" }, [
         _c(
           "button",
-          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-          [
-            _c("span", { staticClass: "glyphicon glyphicon-search" }, [
-              _vm._v("search")
-            ])
-          ]
+          { staticClass: "btn btn-primary", attrs: { type: "button" } },
+          [_c("i", { staticClass: "fas fa-search" })]
         )
       ])
     ])
