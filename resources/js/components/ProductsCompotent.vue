@@ -1,19 +1,30 @@
 <template>
     <div>
-        <div class="input-group mb-2">
-          <div class="input-group-append position-relative w-40">
-            <input type="text" class="form-control" placeholder="Search..." v-model="filter" v-on:keyup.enter="searchProducts">
-            <span class="form-clear" v-if="filter != ''" v-on:click="clearFilter"><i class="fas fa-times"></i></span>
+        <div class="row">
+          <!-- INPUT SEARCH -->
+          <div class="input-group mb-2 col-md-8 col-sm-8 col-12">
+            <div class="input-group-append position-relative w-75">
+              <input type="text" class="form-control" placeholder="Search..." v-model="filter" v-on:keyup.enter="searchProducts">
+              <span class="form-clear" v-if="filter != ''" v-on:click="clearFilter"><i class="fas fa-times"></i></span>
+            </div>
+            
+            <div class="input-group-append">
+              <button class="btn btn-primary" type="button" v-on:click="searchProducts">
+                <!-- <span class="glyphicon glyphicon-search"></span> -->
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
           </div>
-          
-          <div class="input-group-append">
-            <button class="btn btn-primary" type="button" v-on:click="searchProducts">
-              <!-- <span class="glyphicon glyphicon-search"></span> -->
-              <i class="fas fa-search"></i>
+
+          <!-- CREATE PRODUCT BUTTON -->
+          <div class="btn-group float-right mb-2 col-md-3 offset-md-1 col-sm-4 col-12">
+            <button class="btn btn-primary btn-md col-12" type="button">
+              Create product
             </button>
           </div>
         </div>
 
+        <!-- PRODUCTS TABLE -->
         <table class="table">
           <thead>
             <tr>
@@ -31,14 +42,15 @@
               <td>{{product.product_price}}</td>
               <td>{{product.company_name}}</td>
               <td>
-                <a v-on:click="selectProduct(product)" class="btn btn-info text-light" data-toggle="modal" data-target="#read_product">Read</a>
-                <a class="btn btn-primary text-light">Update</a>
+                <a v-on:click="openProductReaderModal(product)" class="btn btn-info text-light">Read</a>
+                <a v-on:click="openProductUpdaterModal(product)" class="btn btn-primary text-light">Update</a>
                 <a class="btn btn-danger text-light">Delete</a>
               </td>
             </tr>
           </tbody>
         </table>
 
+        <!-- PAGINATION -->
         <ul class="pagination">
           <li v-if="current_page > 1" class="page-item">
             <a v-on:click="loadProducts(1)" class="page-link">First</a>
@@ -51,15 +63,15 @@
           </li>
         </ul>
 
+        <!-- DOWNLOAD BUTTON -->
         <button class="btn btn-success" v-on:click="downloadProducts">
           <span v-if="!this.$root.isLoading">Download products</span>
           <span v-if="this.$root.isLoading">Downloading products</span>
           <loading-screen-button class="d-inline" v-if="this.$root.isLoading"></loading-screen-button>
         </button>
         
-        <product-modals>
-          <h3 slot="header">Read a product</h3>
-        </product-modals>
+        <!-- PRODUCT MODALS -->
+        <products-modals></products-modals>
     </div>
 </template>
 
@@ -95,7 +107,7 @@ export default {
       };
       var headers = {
         "X-CSRF-TOKEN": this.$root.token
-      }
+      };
 
       this.$http.post(this.$root.getCurrentPath() + "/countAllProducts", data, {headers: headers}).then(  // "this.$root.getCurrentPath()" calls to "app" Vue.
         function(response) {  // Success
@@ -153,9 +165,14 @@ export default {
       return (page == this.current_page);
     },
 
-    /* SET: Product to read to the modal */
-    selectProduct: function (product) {
-      EventBus.$emit('select_product', product);
+    /* OPEN: The product reader modal with the passed product */
+    openProductReaderModal: function (product) {
+      EventBus.$emit("productModal_reader", product);
+    },
+
+    /* OPEN: The product updater modal with the passed product */
+    openProductUpdaterModal: function (product) {
+      EventBus.$emit("productModal_updater", product);
     },
 
     /* DOWNLOAD: All products in a .csv file */
@@ -167,7 +184,7 @@ export default {
       };
       var headers = {
         "X-CSRF-TOKEN": this.$root.token
-      }
+      };
 
       this.$http.post(this.$root.getCurrentPath() + "/getAllProducts", data, {headers: headers}).then(
         function(response) {  // Success

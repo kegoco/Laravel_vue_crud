@@ -24999,7 +24999,11 @@ window.VueResource = __webpack_require__(41);
  */
 
 Vue.component('products-component', __webpack_require__(43));
-Vue.component('product-modals', __webpack_require__(46));
+
+Vue.component('products-modals', __webpack_require__(65));
+Vue.component('product-reader', __webpack_require__(62));
+Vue.component('product-updater', __webpack_require__(68));
+
 Vue.component('loading-screen-button', __webpack_require__(49));
 
 // const files = require.context('./', true, /\.vue$/i)
@@ -49025,6 +49029,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -49117,9 +49133,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return page == this.current_page;
     },
 
-    /* SET: Product to read to the modal */
-    selectProduct: function selectProduct(product) {
-      __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$emit('select_product', product);
+    /* OPEN: The product reader modal with the passed product */
+    openProductReaderModal: function openProductReaderModal(product) {
+      __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$emit("productModal_reader", product);
+    },
+
+    /* OPEN: The product updater modal with the passed product */
+    openProductUpdaterModal: function openProductUpdaterModal(product) {
+      __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$emit("productModal_updater", product);
     },
 
     /* DOWNLOAD: All products in a .csv file */
@@ -49191,67 +49212,78 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div", { staticClass: "input-group mb-2" }, [
+      _c("div", { staticClass: "row" }, [
         _c(
           "div",
-          { staticClass: "input-group-append position-relative w-40" },
+          { staticClass: "input-group mb-2 col-md-8 col-sm-8 col-12" },
           [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.filter,
-                  expression: "filter"
-                }
-              ],
-              staticClass: "form-control",
-              attrs: { type: "text", placeholder: "Search..." },
-              domProps: { value: _vm.filter },
-              on: {
-                keyup: function($event) {
-                  if (
-                    !("button" in $event) &&
-                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                  ) {
-                    return null
+            _c(
+              "div",
+              { staticClass: "input-group-append position-relative w-75" },
+              [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.filter,
+                      expression: "filter"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { type: "text", placeholder: "Search..." },
+                  domProps: { value: _vm.filter },
+                  on: {
+                    keyup: function($event) {
+                      if (
+                        !("button" in $event) &&
+                        _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                      ) {
+                        return null
+                      }
+                      return _vm.searchProducts($event)
+                    },
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.filter = $event.target.value
+                    }
                   }
-                  return _vm.searchProducts($event)
-                },
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.filter = $event.target.value
-                }
-              }
-            }),
+                }),
+                _vm._v(" "),
+                _vm.filter != ""
+                  ? _c(
+                      "span",
+                      {
+                        staticClass: "form-clear",
+                        on: { click: _vm.clearFilter }
+                      },
+                      [_c("i", { staticClass: "fas fa-times" })]
+                    )
+                  : _vm._e()
+              ]
+            ),
             _vm._v(" "),
-            _vm.filter != ""
-              ? _c(
-                  "span",
-                  { staticClass: "form-clear", on: { click: _vm.clearFilter } },
-                  [_c("i", { staticClass: "fas fa-times" })]
-                )
-              : _vm._e()
+            _c("div", { staticClass: "input-group-append" }, [
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-primary",
+                  attrs: { type: "button" },
+                  on: { click: _vm.searchProducts }
+                },
+                [_c("i", { staticClass: "fas fa-search" })]
+              )
+            ])
           ]
         ),
         _vm._v(" "),
-        _c("div", { staticClass: "input-group-append" }, [
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-primary",
-              attrs: { type: "button" },
-              on: { click: _vm.searchProducts }
-            },
-            [_c("i", { staticClass: "fas fa-search" })]
-          )
-        ])
+        _vm._m(0)
       ]),
       _vm._v(" "),
       _c("table", { staticClass: "table" }, [
-        _vm._m(0),
+        _vm._m(1),
         _vm._v(" "),
         _c(
           "tbody",
@@ -49270,22 +49302,27 @@ var render = function() {
                   "a",
                   {
                     staticClass: "btn btn-info text-light",
-                    attrs: {
-                      "data-toggle": "modal",
-                      "data-target": "#read_product"
-                    },
                     on: {
                       click: function($event) {
-                        _vm.selectProduct(product)
+                        _vm.openProductReaderModal(product)
                       }
                     }
                   },
                   [_vm._v("Read")]
                 ),
                 _vm._v(" "),
-                _c("a", { staticClass: "btn btn-primary text-light" }, [
-                  _vm._v("Update")
-                ]),
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-primary text-light",
+                    on: {
+                      click: function($event) {
+                        _vm.openProductUpdaterModal(product)
+                      }
+                    }
+                  },
+                  [_vm._v("Update")]
+                ),
                 _vm._v(" "),
                 _c("a", { staticClass: "btn btn-danger text-light" }, [
                   _vm._v("Delete")
@@ -49374,16 +49411,34 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("product-modals", [
-        _c("h3", { attrs: { slot: "header" }, slot: "header" }, [
-          _vm._v("Read a product")
-        ])
-      ])
+      _c("products-modals")
     ],
     1
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass:
+          "btn-group float-right mb-2 col-md-3 offset-md-1 col-sm-4 col-12"
+      },
+      [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary btn-md col-12",
+            attrs: { type: "button" }
+          },
+          [_vm._v("\n          Create product\n        ")]
+        )
+      ]
+    )
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -49413,265 +49468,9 @@ if (false) {
 }
 
 /***/ }),
-/* 46 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(3)
-/* script */
-var __vue_script__ = __webpack_require__(47)
-/* template */
-var __vue_template__ = __webpack_require__(48)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/js/components/ProductModals.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-73a8de5a", Component.options)
-  } else {
-    hotAPI.reload("data-v-73a8de5a", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 47 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event_bus_js__ = __webpack_require__(13);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-//   https://vuejs.org/v2/examples/modal.html
-//   https://vuejsexamples.com/tag/modal/
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {
-    var _this = this;
-
-    // INIT
-    __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$on("select_product", function (product) {
-      _this.read_product_modal = true;
-      _this.product = product;
-    });
-  },
-  data: function data() {
-    // VARS
-    return {
-      product: {},
-      read_product_modal: false
-    };
-  },
-
-  methods: {// METHODS
-  }
-});
-
-/***/ }),
-/* 48 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _vm.read_product_modal
-    ? _c(
-        "transition",
-        {
-          attrs: { name: "modal" },
-          on: {
-            close: function($event) {
-              _vm.read_product_modal = false
-            }
-          }
-        },
-        [
-          _c("div", { staticClass: "modal-mask" }, [
-            _c("div", { staticClass: "modal-wrapper" }, [
-              _c("div", { staticClass: "modal-container" }, [
-                _c(
-                  "div",
-                  { staticClass: "modal-header" },
-                  [
-                    _vm._t("header", [
-                      _vm._v(
-                        "\n                    default header\n                "
-                      )
-                    ])
-                  ],
-                  2
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "modal-body" },
-                  [
-                    _vm._t("body", [
-                      _c("table", { staticClass: "table" }, [
-                        _c("tbody", [
-                          _c("tr", [
-                            _c("td", { staticClass: "font-weight-bold" }, [
-                              _vm._v("Name")
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(_vm.product.product_name))])
-                          ]),
-                          _vm._v(" "),
-                          _c("tr", [
-                            _c("td", { staticClass: "font-weight-bold" }, [
-                              _vm._v("Description")
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _vm._v(_vm._s(_vm.product.product_description))
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("tr", [
-                            _c("td", { staticClass: "font-weight-bold" }, [
-                              _vm._v("Price")
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _vm._v(_vm._s(_vm.product.product_price))
-                            ])
-                          ]),
-                          _vm._v(" "),
-                          _c("tr", [
-                            _c("td", { staticClass: "font-weight-bold" }, [
-                              _vm._v("Company")
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(_vm.product.company_name))])
-                          ])
-                        ])
-                      ])
-                    ])
-                  ],
-                  2
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "modal-footer" },
-                  [
-                    _vm._t("footer", [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "modal-default-button btn btn-success",
-                          on: {
-                            click: function($event) {
-                              _vm.read_product_modal = false
-                            }
-                          }
-                        },
-                        [
-                          _vm._v(
-                            "\n                        Close\n                    "
-                          )
-                        ]
-                      )
-                    ])
-                  ],
-                  2
-                )
-              ])
-            ])
-          ])
-        ]
-      )
-    : _vm._e()
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-73a8de5a", module.exports)
-  }
-}
-
-/***/ }),
+/* 46 */,
+/* 47 */,
+/* 48 */,
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -49790,6 +49589,579 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 53 */,
+/* 54 */,
+/* 55 */,
+/* 56 */,
+/* 57 */,
+/* 58 */,
+/* 59 */,
+/* 60 */,
+/* 61 */,
+/* 62 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(63)
+/* template */
+var __vue_template__ = __webpack_require__(64)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/products_modals/ProductReader_Modal.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5d414517", Component.options)
+  } else {
+    hotAPI.reload("data-v-5d414517", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 63 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event_bus_js__ = __webpack_require__(13);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+//   https://vuejs.org/v2/examples/modal.html
+//   https://vuejsexamples.com/tag/modal/
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    var _this = this;
+
+    // INIT
+    __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$on("productModal_reader", function (product) {
+      _this.opened_modal = true;
+      _this.product = product;
+    });
+  },
+  data: function data() {
+    // VARS
+    return {
+      product: {},
+      opened_modal: false
+    };
+  },
+
+  methods: {// METHODS
+  }
+});
+
+/***/ }),
+/* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.opened_modal
+    ? _c(
+        "transition",
+        {
+          attrs: { name: "modal" },
+          on: {
+            close: function($event) {
+              _vm.opened_modal = false
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "modal-mask" }, [
+            _c("div", { staticClass: "modal-wrapper" }, [
+              _c("div", { staticClass: "modal-container" }, [
+                _c("div", { staticClass: "modal-header" }, [
+                  _c("h3", [_vm._v("Read a product")])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("table", { staticClass: "table" }, [
+                    _c("tbody", [
+                      _c("tr", [
+                        _c("td", { staticClass: "font-weight-bold" }, [
+                          _vm._v("Name")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(_vm.product.product_name))])
+                      ]),
+                      _vm._v(" "),
+                      _c("tr", [
+                        _c("td", { staticClass: "font-weight-bold" }, [
+                          _vm._v("Description")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(_vm._s(_vm.product.product_description))
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("tr", [
+                        _c("td", { staticClass: "font-weight-bold" }, [
+                          _vm._v("Price")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(_vm.product.product_price))])
+                      ]),
+                      _vm._v(" "),
+                      _c("tr", [
+                        _c("td", { staticClass: "font-weight-bold" }, [
+                          _vm._v("Company")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(_vm.product.company_name))])
+                      ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "modal-default-button btn btn-success",
+                      on: {
+                        click: function($event) {
+                          _vm.opened_modal = false
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                        Close\n                    "
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ])
+        ]
+      )
+    : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5d414517", module.exports)
+  }
+}
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(66)
+/* template */
+var __vue_template__ = __webpack_require__(67)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/ProductsModals.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-1be437d6", Component.options)
+  } else {
+    hotAPI.reload("data-v-1be437d6", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 66 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {// INIT
+
+  },
+  data: function data() {
+    // VARS
+    return {};
+  },
+
+  methods: {// METHODS
+  }
+});
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [_c("product-reader"), _vm._v(" "), _c("product-updater")],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-1be437d6", module.exports)
+  }
+}
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(3)
+/* script */
+var __vue_script__ = __webpack_require__(69)
+/* template */
+var __vue_template__ = __webpack_require__(70)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/products_modals/ProductUpdater_Modal.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-7aba2581", Component.options)
+  } else {
+    hotAPI.reload("data-v-7aba2581", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event_bus_js__ = __webpack_require__(13);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+//   https://vuejs.org/v2/examples/modal.html
+//   https://vuejsexamples.com/tag/modal/
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    var _this = this;
+
+    // INIT
+    __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$on("productModal_updater", function (product) {
+      _this.opened_modal = true;
+      _this.product = product;
+    });
+  },
+  data: function data() {
+    // VARS
+    return {
+      product: {},
+      opened_modal: false
+    };
+  },
+
+  methods: {// METHODS
+  }
+});
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.opened_modal
+    ? _c(
+        "transition",
+        {
+          attrs: { name: "modal" },
+          on: {
+            close: function($event) {
+              _vm.opened_modal = false
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "modal-mask" }, [
+            _c("div", { staticClass: "modal-wrapper" }, [
+              _c("div", { staticClass: "modal-container" }, [
+                _c("div", { staticClass: "modal-header" }, [
+                  _c("h3", [_vm._v("Update a product")])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("table", { staticClass: "table" }, [
+                    _c("tbody", [
+                      _c("tr", [
+                        _c("td", { staticClass: "font-weight-bold" }, [
+                          _vm._v("Name")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(_vm.product.product_name))])
+                      ]),
+                      _vm._v(" "),
+                      _c("tr", [
+                        _c("td", { staticClass: "font-weight-bold" }, [
+                          _vm._v("Description")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [
+                          _vm._v(_vm._s(_vm.product.product_description))
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("tr", [
+                        _c("td", { staticClass: "font-weight-bold" }, [
+                          _vm._v("Price")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(_vm.product.product_price))])
+                      ]),
+                      _vm._v(" "),
+                      _c("tr", [
+                        _c("td", { staticClass: "font-weight-bold" }, [
+                          _vm._v("Company")
+                        ]),
+                        _vm._v(" "),
+                        _c("td", [_vm._v(_vm._s(_vm.product.company_name))])
+                      ])
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "modal-default-button btn btn-success",
+                      on: {
+                        click: function($event) {
+                          _vm.opened_modal = false
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                        Close\n                    "
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ])
+        ]
+      )
+    : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-7aba2581", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

@@ -19,7 +19,11 @@ window.VueResource = require('vue-resource');
  */
 
 Vue.component('products-component', require('./components/ProductsCompotent.vue'));
-Vue.component('product-modals', require('./components/ProductModals.vue'));
+
+Vue.component('products-modals', require('./components/ProductsModals.vue'));
+Vue.component('product-reader', require('./components/products_modals/ProductReader_Modal.vue'));
+Vue.component('product-updater', require('./components/products_modals/ProductUpdater_Modal.vue'));
+
 Vue.component('loading-screen-button', require('./components/LoadingScreenButton.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)

@@ -1,17 +1,17 @@
 <template>
-    <transition name="modal" v-if="read_product_modal" @close="read_product_modal = false">
+    <transition name="modal" v-if="opened_modal" @close="opened_modal = false">
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">
 
-                <div class="modal-header">
-                    <slot name="header">
-                        default header
-                    </slot>
-                </div>
+                    <!-- HEADER -->
+                    <div class="modal-header">
+                        <h3>Update a product</h3>
+                    </div>
 
-                <div class="modal-body">
-                    <slot name="body">
+                    <!-- BODY -->
+                    <div class="modal-body">
+                        <!-- TODO: Form to update the selected product -->
                         <table class="table">
                             <tbody>
                                 <tr>
@@ -32,16 +32,14 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </slot>
-                </div>
+                    </div>
 
-                <div class="modal-footer">
-                    <slot name="footer">
-                        <button class="modal-default-button btn btn-success" @click="read_product_modal = false">
+                    <!-- FOOTER -->
+                    <div class="modal-footer">
+                        <button class="modal-default-button btn btn-success" @click="opened_modal = false">
                             Close
                         </button>
-                    </slot>
-                </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -49,22 +47,22 @@
 </template>
 
 <script>
-import { EventBus } from "../event-bus.js";
+import { EventBus } from "../../event-bus.js";
 
 //   https://vuejs.org/v2/examples/modal.html
 //   https://vuejsexamples.com/tag/modal/
 
 export default {
   created: function() {  // INIT
-    EventBus.$on("select_product", product => {
-      this.read_product_modal = true;
+    EventBus.$on("productModal_updater", product => {
+      this.opened_modal = true;
       this.product = product;
     });
   },
   data() {  // VARS
     return {
       product: {},
-      read_product_modal: false
+      opened_modal: false
     };
   },
   methods: {  // METHODS
