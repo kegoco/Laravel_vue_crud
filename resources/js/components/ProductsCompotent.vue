@@ -1,7 +1,11 @@
 <template>
     <div>
-        <div class="input-group col-md-5">
-          <input type="text" class="form-control" placeholder="Search..." v-model="filter" v-on:keyup.enter="searchProducts">
+        <div class="input-group mb-2">
+          <div class="input-group-append position-relative w-40">
+            <input type="text" class="form-control" placeholder="Search..." v-model="filter" v-on:keyup.enter="searchProducts">
+            <span class="form-clear" v-if="filter != ''" v-on:click="clearFilter"><i class="fas fa-times"></i></span>
+          </div>
+          
           <div class="input-group-append">
             <button class="btn btn-primary" type="button" v-on:click="searchProducts">
               <!-- <span class="glyphicon glyphicon-search"></span> -->
@@ -53,7 +57,9 @@
           <loading-screen-button class="d-inline" v-if="this.$root.isLoading"></loading-screen-button>
         </button>
         
-        <product-modals></product-modals>
+        <product-modals>
+          <h3 slot="header">Read a product</h3>
+        </product-modals>
     </div>
 </template>
 
@@ -76,6 +82,7 @@ export default {
       range_page: 3,
       current_page: 1,
       total_pages: 0,
+
       filter: ""
     }
   },
@@ -198,6 +205,13 @@ export default {
 
     /* GET: All products finding by the filter */
     searchProducts: function () {
+      this.current_page = 1;
+      this.countAllProducts();
+    },
+
+    /* CLEAR: The filter content */
+    clearFilter: function () {
+      this.filter = "";
       this.current_page = 1;
       this.countAllProducts();
     }

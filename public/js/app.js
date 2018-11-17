@@ -49019,6 +49019,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -49040,6 +49046,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       range_page: 3,
       current_page: 1,
       total_pages: 0,
+
       filter: ""
     };
   },
@@ -49162,6 +49169,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     searchProducts: function searchProducts() {
       this.current_page = 1;
       this.countAllProducts();
+    },
+
+    /* CLEAR: The filter content */
+    clearFilter: function clearFilter() {
+      this.filter = "";
+      this.current_page = 1;
+      this.countAllProducts();
     }
   }
 });
@@ -49177,37 +49191,51 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div", { staticClass: "input-group col-md-5" }, [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.filter,
-              expression: "filter"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: { type: "text", placeholder: "Search..." },
-          domProps: { value: _vm.filter },
-          on: {
-            keyup: function($event) {
-              if (
-                !("button" in $event) &&
-                _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-              ) {
-                return null
+      _c("div", { staticClass: "input-group mb-2" }, [
+        _c(
+          "div",
+          { staticClass: "input-group-append position-relative w-40" },
+          [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.filter,
+                  expression: "filter"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text", placeholder: "Search..." },
+              domProps: { value: _vm.filter },
+              on: {
+                keyup: function($event) {
+                  if (
+                    !("button" in $event) &&
+                    _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+                  ) {
+                    return null
+                  }
+                  return _vm.searchProducts($event)
+                },
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.filter = $event.target.value
+                }
               }
-              return _vm.searchProducts($event)
-            },
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.filter = $event.target.value
-            }
-          }
-        }),
+            }),
+            _vm._v(" "),
+            _vm.filter != ""
+              ? _c(
+                  "span",
+                  { staticClass: "form-clear", on: { click: _vm.clearFilter } },
+                  [_c("i", { staticClass: "fas fa-times" })]
+                )
+              : _vm._e()
+          ]
+        ),
         _vm._v(" "),
         _c("div", { staticClass: "input-group-append" }, [
           _c(
@@ -49346,7 +49374,11 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("product-modals")
+      _c("product-modals", [
+        _c("h3", { attrs: { slot: "header" }, slot: "header" }, [
+          _vm._v("Read a product")
+        ])
+      ])
     ],
     1
   )
@@ -49484,60 +49516,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
-Vue.component('modal', {
-  template: '#modal-template'
-});
 //   https://vuejs.org/v2/examples/modal.html
 //   https://vuejsexamples.com/tag/modal/
 
@@ -49546,9 +49527,7 @@ Vue.component('modal', {
     var _this = this;
 
     // INIT
-    __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$on('select_product', function (product) {
-      console.log("HOLA ====================");
-      console.log(product);
+    __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$on("select_product", function (product) {
       _this.read_product_modal = true;
       _this.product = product;
     });
@@ -49562,7 +49541,6 @@ Vue.component('modal', {
   },
 
   methods: {// METHODS
-
   }
 });
 
@@ -49574,47 +49552,114 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "script",
-        { attrs: { type: "text/x-template", id: "modal-template" } },
+  return _vm.read_product_modal
+    ? _c(
+        "transition",
+        {
+          attrs: { name: "modal" },
+          on: {
+            close: function($event) {
+              _vm.read_product_modal = false
+            }
+          }
+        },
         [
-          _vm._v(
-            '\n        <transition name="modal">\n            <div class="modal-mask">\n            <div class="modal-wrapper">\n                <div class="modal-container">\n\n                <div class="modal-header">\n                    <slot name="header">\n                    default header\n                    </slot>\n                </div>\n\n                <div class="modal-body">\n                    <slot name="body">\n                        <table class="table">\n                            <tbody>\n                                <tr>\n                                    <td class="font-weight-bold">Name</td>\n                                    <td>' +
-              _vm._s(_vm.product.product_name) +
-              '</td>\n                                </tr>\n                                <tr>\n                                    <td class="font-weight-bold">Description</td>\n                                    <td>' +
-              _vm._s(_vm.product.product_description) +
-              '</td>\n                                </tr>\n                                <tr>\n                                    <td class="font-weight-bold">Price</td>\n                                    <td>' +
-              _vm._s(_vm.product.product_price) +
-              '</td>\n                                </tr>\n                                <tr>\n                                    <td class="font-weight-bold">Company</td>\n                                    <td>' +
-              _vm._s(_vm.product.company_name) +
-              '</td>\n                                </tr>\n                            </tbody>\n                        </table>\n                    </slot>\n                </div>\n\n                <div class="modal-footer">\n                    <slot name="footer">\n                        <button class="modal-default-button btn btn-success" @click="$emit(\'close\')">\n                            Close\n                        </button>\n                    </slot>\n                </div>\n                </div>\n            </div>\n            </div>\n        </transition>\n    '
-          )
-        ]
-      ),
-      _vm._v(" "),
-      _vm.read_product_modal
-        ? _c(
-            "modal",
-            {
-              on: {
-                close: function($event) {
-                  _vm.read_product_modal = false
-                }
-              }
-            },
-            [
-              _c("h3", { attrs: { slot: "header" }, slot: "header" }, [
-                _vm._v("Read a product")
+          _c("div", { staticClass: "modal-mask" }, [
+            _c("div", { staticClass: "modal-wrapper" }, [
+              _c("div", { staticClass: "modal-container" }, [
+                _c(
+                  "div",
+                  { staticClass: "modal-header" },
+                  [
+                    _vm._t("header", [
+                      _vm._v(
+                        "\n                    default header\n                "
+                      )
+                    ])
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "modal-body" },
+                  [
+                    _vm._t("body", [
+                      _c("table", { staticClass: "table" }, [
+                        _c("tbody", [
+                          _c("tr", [
+                            _c("td", { staticClass: "font-weight-bold" }, [
+                              _vm._v("Name")
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(_vm.product.product_name))])
+                          ]),
+                          _vm._v(" "),
+                          _c("tr", [
+                            _c("td", { staticClass: "font-weight-bold" }, [
+                              _vm._v("Description")
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(_vm._s(_vm.product.product_description))
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("tr", [
+                            _c("td", { staticClass: "font-weight-bold" }, [
+                              _vm._v("Price")
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _vm._v(_vm._s(_vm.product.product_price))
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("tr", [
+                            _c("td", { staticClass: "font-weight-bold" }, [
+                              _vm._v("Company")
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(_vm.product.company_name))])
+                          ])
+                        ])
+                      ])
+                    ])
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "modal-footer" },
+                  [
+                    _vm._t("footer", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "modal-default-button btn btn-success",
+                          on: {
+                            click: function($event) {
+                              _vm.read_product_modal = false
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        Close\n                    "
+                          )
+                        ]
+                      )
+                    ])
+                  ],
+                  2
+                )
               ])
-            ]
-          )
-        : _vm._e()
-    ],
-    1
-  )
+            ])
+          ])
+        ]
+      )
+    : _vm._e()
 }
 var staticRenderFns = []
 render._withStripped = true

@@ -10474,25 +10474,6 @@ a.text-dark:focus {
 
 /* MODAL RIGHT */
 
-.modal.right .modal-dialog {
-  position: fixed;
-  margin: auto;
-  right: 0;
-  min-width: 50%;
-  height: 100%;
-  -webkit-transform: translate3d(0%, 0, 0);
-  transform: translate3d(0%, 0, 0);
-}
-
-.modal.right .modal-content {
-  height: 100%;
-  overflow-y: auto;
-}
-
-.modal.right .modal-body {
-  padding: 15px 15px 80px;
-}
-
 /* LOADING SCREEN */
 
 .spinner {
@@ -10610,5 +10591,35 @@ a.text-dark:focus {
 .modal-leave-active .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+/* CLEAR FILTER */
+
+.form-clear {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: #42b983;
+  border-radius: 50%;
+  bottom: 8px;
+  color: whitesmoke;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  height: 21px;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  position: absolute;
+  right: 10px;
+  width: 21px;
+  z-index: 10;
+}
+
+/* OTHERS */
+
+.w-40 {
+  width: 40% !important;
 }
 
