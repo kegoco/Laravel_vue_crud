@@ -10623,3 +10623,7 @@ a.text-dark:focus {
   width: 75% !important;
 }
 
+.no-resize {
+  resize: none !important;
+}
+

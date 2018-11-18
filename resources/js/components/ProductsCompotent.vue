@@ -80,6 +80,25 @@ import {EventBus} from "../event-bus.js";
 
 export default {
   created: function () {  // INIT
+    EventBus.$on("productUpdated", product => {
+      // If a product was modified we need to refresh it data
+      if (this.products != undefined && this.products != []) {
+        // Try to get the old product
+        var old_product = this.products.find(function(element) {
+          return element.product_id == product.product_id;
+        });
+
+        if (old_product != undefined) {
+          // Updated the product with the new data
+          old_product.product_name = product.product_name;
+          old_product.product_description = product.product_description;
+          old_product.product_price = product.product_price;
+          old_product.company_id = product.company_id;
+          old_product.company_name = product.company_name;
+        }
+      }
+    });
+
     this.countAllProducts();
     console.log("Product Component started");
   },

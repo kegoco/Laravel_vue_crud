@@ -35,7 +35,7 @@
 
                     <!-- FOOTER -->
                     <div class="modal-footer">
-                        <button class="modal-default-button btn btn-success" @click="opened_modal = false">
+                        <button v-on:click="opened_modal = false" class="modal-default-button btn btn-success">
                             Close
                         </button>
                     </div>

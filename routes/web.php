@@ -19,3 +19,5 @@ Route::get("/products", "ProductController@index")->name("products");
 Route::post("/products/getProducts", "ProductController@getProducts");
 Route::post("/products/countAllProducts", "ProductController@countAllProducts");
 Route::post("/products/getAllProducts", "ProductController@getAllProducts");
+Route::get("/products/getAllCompanies", "ProductController@getAllCompanies");
+Route::post("/products/updateProduct", "ProductController@updateProduct");
