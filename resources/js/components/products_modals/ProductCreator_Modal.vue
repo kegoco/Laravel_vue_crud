@@ -126,7 +126,35 @@ export default {
 
     /* SET: The new product to the database */
     createProduct: function () {
-        console.log("Create product...");
+        var headers = {
+            "X-CSRF-TOKEN": this.$root.token
+        };
+
+        this.$http.post(this.$root.getCurrentPath() + "/createProduct", this.product, {headers: headers}).then(
+            function(response) {  // Success
+                if (response.data.error == undefined) {
+                    EventBus.$emit("refreshProductTable");
+
+                    // Show success message
+                    this.message_object = {
+                        type: "Success",
+                        message: "The product was created successfully!",
+                        color: "text-success"
+                    };
+                }
+                else {
+                    // Show error message
+                    this.message_object = {
+                        type: "Warning",
+                        message: response.data.error,
+                        color: "text-danger"
+                    };
+                }
+            },
+            function(response) {  // Error
+                console.error(response);
+            }
+        );
     }
   }
 };

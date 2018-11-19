@@ -130,7 +130,7 @@ export default {
             function(response) {  // Success
                 if (response.data.error == undefined) {
                     // Update the product on the product view
-                    EventBus.$emit("productUpdated", this.product);
+                    EventBus.$emit("refreshProductTable");
 
                     // Show success message
                     this.message_object = {

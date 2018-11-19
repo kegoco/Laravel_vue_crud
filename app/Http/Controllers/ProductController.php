@@ -18,7 +18,7 @@ class ProductController extends Controller
         return view("products")->with("title_page", "Products");
     }
 
-    /* : Products applying filters */
+    /* GET: Products applying filters */
     public function getProducts(Request $request) {
         $offset = $request["offset"];
         $limit = $request["limit"];
@@ -39,14 +39,14 @@ class ProductController extends Controller
             ]);
     }
 
-    /* : The count of all products */
+    /* GET: The count of all products */
     public function countAllProducts(Request $request) {
         $filter = $request["filter"];
         return Product::where("product_name", "LIKE", "%$filter%")
             ->get()->count();
     }
 
-    /* : All products that will be downloaded */
+    /* GET: All products that will be downloaded */
     public function getAllProducts(Request $request) {
         $filter = $request["filter"];
 
@@ -62,12 +62,37 @@ class ProductController extends Controller
             ]);
     }
 
-    /* : All companies */
+    /* GET: All companies */
     public function getAllCompanies() {
         return Company::get([
             "company_id",
             "company_name"
         ]);
+    }
+
+    /* CREATE: A new product */
+    public function createProduct(Request $request) {
+        $product_name = $this->checkIsset($request, "product_name");
+        $product_description = $this->checkIsset($request, "product_description");
+        $product_price = $this->checkIsset($request, "product_price");
+        $company_id = $this->checkIsset($request, "company_id");
+        $date = date("Y-m-d H:i:s");
+
+        if ($this->hasNulls([$product_name, $product_description, $product_price, $company_id])) {
+            return response()->json(["error" => "You can't create this product!"]);
+        }
+        else {
+            $newProduct = new Product;
+            $newProduct->product_name = $product_name;
+            $newProduct->product_description = $product_description;
+            $newProduct->product_price = $product_price;
+            $newProduct->company_id = $company_id;
+            $newProduct->product_created = $date;
+            $newProduct->product_modified = $date;
+
+            $newProduct->save();
+            return response()->json(["success" => true]);
+        }
     }
 
     /* MODIFY: A product */
@@ -77,11 +102,10 @@ class ProductController extends Controller
         $product_description = $this->checkIsset($request, "product_description");
         $product_price = $this->checkIsset($request, "product_price");
         $company_id = $this->checkIsset($request, "company_id");
+        $product_modified = date("Y-m-d H:i:s");
 
         if ($this->hasNulls([$product_id, $product_name, $product_description, $product_price, $company_id])) {
-            return [
-                "error" => "The product is not valid!"
-            ];
+            return response()->json(["error" => "You can't create this product!"]);
         }
         else {
             return Product::where("product_id", "=", $product_id)
@@ -89,7 +113,8 @@ class ProductController extends Controller
                     "product_name" => $product_name,
                     "product_description" => $product_description,
                     "product_price" => $product_price,
-                    "company_id" => $company_id
+                    "company_id" => $company_id,
+                    "product_modified" => $product_modified
                 ]);
         }
     }

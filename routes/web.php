@@ -20,4 +20,5 @@ Route::post("/products/getProducts", "ProductController@getProducts");
 Route::post("/products/countAllProducts", "ProductController@countAllProducts");
 Route::post("/products/getAllProducts", "ProductController@getAllProducts");
 Route::get("/products/getAllCompanies", "ProductController@getAllCompanies");
+Route::post("/products/createProduct", "ProductController@createProduct");
 Route::post("/products/updateProduct", "ProductController@updateProduct");
