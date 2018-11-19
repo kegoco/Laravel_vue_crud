@@ -1,5 +1,5 @@
 <template>
-    <transition name="modal" v-if="opened_modal" @close="opened_modal = false">
+    <transition name="modal" v-if="opened_modal" v-on:close="opened_modal = false">
         <div class="modal-mask">
             <div class="modal-wrapper">
                 <div class="modal-container">

@@ -3,6 +3,9 @@
         <!-- PRODUCT READER MODAL -->
         <product-reader></product-reader>
 
+        <!-- PRODUCT CREATOR MODAL -->
+        <product-creator></product-creator>
+
         <!-- PRODUCT UPDATER MODAL -->
         <product-updater></product-updater>
     </div>

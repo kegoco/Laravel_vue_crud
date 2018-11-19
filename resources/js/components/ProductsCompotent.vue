@@ -18,7 +18,7 @@
 
           <!-- CREATE PRODUCT BUTTON -->
           <div class="btn-group float-right mb-2 col-md-3 offset-md-1 col-sm-4 col-12">
-            <button class="btn btn-primary btn-md col-12" type="button">
+            <button v-on:click="openProductCreatorModal" class="btn btn-primary btn-md col-12" type="button">
               Create product
             </button>
           </div>
@@ -187,6 +187,11 @@ export default {
     /* OPEN: The product reader modal with the passed product */
     openProductReaderModal: function (product) {
       EventBus.$emit("productModal_reader", product);
+    },
+
+    /* OPEN: The product creator modal */
+    openProductCreatorModal: function () {
+      EventBus.$emit("productModal_creator");
     },
 
     /* OPEN: The product updater modal with the passed product */

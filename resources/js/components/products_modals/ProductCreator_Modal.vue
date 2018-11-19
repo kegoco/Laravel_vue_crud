@@ -6,7 +6,7 @@
 
                     <!-- HEADER -->
                     <div class="modal-header">
-                        <h3>Update a product</h3>
+                        <h3>Create a product</h3>
                     </div>
 
                     <!-- BODY -->
@@ -34,7 +34,7 @@
                                 <tr>
                                     <td class="font-weight-bold">Company</td>
                                     <td>
-                                        <select v-model="product.company_id" v-on:change="selectCompany(product.company_id)" class="form-control">
+                                        <select v-model="product.company_id" class="form-control">
                                             <option v-for="company in companies" :key="company.company_id" v-bind:value="company.company_id">{{ company.company_name }}</option>
                                         </select>
                                     </td>
@@ -50,8 +50,8 @@
 
                     <!-- FOOTER -->
                     <div class="modal-footer">
-                        <button v-on:click.prevent="updateProduct" :disabled="!wasProductChanged()" type="submit" class="modal-default-button btn btn-success">
-                            Save
+                        <button v-on:click.prevent="createProduct" :disabled="!allFieldsFilled()" type="submit" class="modal-default-button btn btn-success">
+                            Create
                         </button>
                         <button v-on:click.prevent="opened_modal = false" class="modal-default-button btn btn-danger">
                             Close
@@ -71,25 +71,26 @@ import { EventBus } from "../../event-bus.js";
 
 export default {
   created: function() {  // INIT
-    EventBus.$on("productModal_updater", product => {
+    EventBus.$on("productModal_creator", () => {
         this.message_object = undefined;
         this.opened_modal = true;
         this.getAllCompanies();
-        this.original_product = product;
         this.product = {
-            product_id: product.product_id,
-            product_name: product.product_name,
-            product_description: product.product_description,
-            product_price: product.product_price,
-            company_id: product.company_id,
-            company_name: product.company_name
+            product_name: "",
+            product_description: "",
+            product_price: 0.00,
+            company_id: 0
         };
     });
   },
   data() {  // VARS
     return {
-        original_product: {},
-        product: {},
+        product: {
+            product_name: "",
+            product_description: "",
+            product_price: 0.00,
+            company_id: 0
+        },
         companies: [],
 
         message_object: undefined,
@@ -110,62 +111,22 @@ export default {
         );
     },
 
-    /* SET: The company name to the product */
-    selectCompany: function (company_id) {
-        this.companies.forEach((company) => {
-            if (company.company_id == company_id) {
-                this.product.company_name = company.company_name;
-            }
-            
-        });
-    },
-
-    /* UPDATE: The current product */
-    updateProduct: function () {
-        var headers = {
-            "X-CSRF-TOKEN": this.$root.token
-        };
-
-        this.$http.post(this.$root.getCurrentPath() + "/updateProduct", this.product, {headers: headers}).then(
-            function(response) {  // Success
-                if (response.data.error == undefined) {
-                    // Update the product on the product view
-                    EventBus.$emit("productUpdated", this.product);
-
-                    // Show success message
-                    this.message_object = {
-                        type: "Success",
-                        message: "The product was updated successfully!",
-                        color: "text-success"
-                    };
-                }
-                else {
-                    // Show error message
-                    this.message_object = {
-                        type: "Warning",
-                        message: response.data.error,
-                        color: "text-danger"
-                    };
-                }
-            },
-            function(response) {  // Error
-                console.error(response);
-            }
-        );
-    },
-
-    /* CHECK: If product was modified */
-    wasProductChanged: function () {
-        if (this.original_product.product_name != this.product.product_name
-            || this.original_product.product_description != this.product.product_description
-            || this.original_product.product_price != this.product.product_price
-            || this.original_product.company_id != this.product.company_id) {
+    /* CHECK: If all product's fields are filled */
+    allFieldsFilled: function () {
+        if (this.product.product_name != ""
+            && this.product.product_description != ""
+            && this.product.company_id != 0) {
 
             return true;
         }
         else {
             return false;
         }
+    },
+
+    /* SET: The new product to the database */
+    createProduct: function () {
+        console.log("Create product...");
     }
   }
 };
