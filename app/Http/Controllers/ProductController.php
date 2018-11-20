@@ -26,6 +26,9 @@ class ProductController extends Controller
 
         return Product::leftjoin("COMPANIES as cmp","cmp.company_id", "=", "PRODUCTS.company_id")
             ->where("product_name", "LIKE", "%$filter%")
+            ->orWhere("product_description", "LIKE", "%$filter%")
+            ->orWhere("product_price", "LIKE", "%$filter%")
+            ->orWhere("cmp.company_name", "LIKE", "%$filter%")
             ->orderBy("product_name", "asc")
             //->take(5)
             ->offset($offset)->limit($limit)
@@ -42,7 +45,11 @@ class ProductController extends Controller
     /* GET: The count of all products */
     public function countAllProducts(Request $request) {
         $filter = $request["filter"];
-        return Product::where("product_name", "LIKE", "%$filter%")
+        return Product::leftjoin("COMPANIES as cmp","cmp.company_id", "=", "PRODUCTS.company_id")
+            ->where("product_name", "LIKE", "%$filter%")
+            ->orWhere("product_description", "LIKE", "%$filter%")
+            ->orWhere("product_price", "LIKE", "%$filter%")
+            ->orWhere("cmp.company_name", "LIKE", "%$filter%")
             ->get()->count();
     }
 
@@ -52,6 +59,9 @@ class ProductController extends Controller
 
         return Product::leftjoin("COMPANIES as cmp","cmp.company_id", "=", "PRODUCTS.company_id")
             ->where("product_name", "LIKE", "%$filter%")
+            ->orWhere("product_description", "LIKE", "%$filter%")
+            ->orWhere("product_price", "LIKE", "%$filter%")
+            ->orWhere("cmp.company_name", "LIKE", "%$filter%")
             ->orderBy("product_name", "asc")
             ->get([
                 "product_id",
@@ -105,7 +115,7 @@ class ProductController extends Controller
         $product_modified = date("Y-m-d H:i:s");
 
         if ($this->hasNulls([$product_id, $product_name, $product_description, $product_price, $company_id])) {
-            return response()->json(["error" => "You can't create this product!"]);
+            return response()->json(["error" => "You can't update this product!"]);
         }
         else {
             return Product::where("product_id", "=", $product_id)
@@ -116,6 +126,17 @@ class ProductController extends Controller
                     "company_id" => $company_id,
                     "product_modified" => $product_modified
                 ]);
+        }
+    }
+
+    /* DELETE: A product */
+    public function deleteProduct(Request $request) {
+        $product_id = $this->checkIsset($request, "product_id");
+        if ($this->hasNulls([$product_id])) {
+            return response()->json(["error" => "You can't delete this product!"]);
+        }
+        else {
+            return Product::destroy($product_id);
         }
     }
 

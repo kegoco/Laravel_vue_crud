@@ -44,7 +44,7 @@
               <td>
                 <a v-on:click="openProductReaderModal(product)" class="btn btn-info text-light">Read</a>
                 <a v-on:click="openProductUpdaterModal(product)" class="btn btn-primary text-light">Update</a>
-                <a class="btn btn-danger text-light">Delete</a>
+                <a v-on:click="openProductDeleterModal(product)" class="btn btn-danger text-light">Delete</a>
               </td>
             </tr>
           </tbody>
@@ -64,7 +64,7 @@
         </ul>
 
         <!-- DOWNLOAD BUTTON -->
-        <button class="btn btn-success" v-on:click="downloadProducts">
+        <button v-if="products.length > 0" class="btn btn-success" v-on:click="downloadProducts">
           <span v-if="!this.$root.isLoading">Download products</span>
           <span v-if="this.$root.isLoading">Downloading products</span>
           <loading-screen-button class="d-inline" v-if="this.$root.isLoading"></loading-screen-button>
@@ -127,10 +127,11 @@ export default {
 
     /* GET: A specify range of products */
     loadProducts: function (page) {
-      if (page != undefined) this.current_page = page;
+      if (page != undefined && page != null) this.current_page = page;
+      if (this.current_page > this.total_pages) this.current_page = this.total_pages;  // It check if the last page has been left to exist
 
       var data = {
-        offset: (this.product_by_page * page) - this.product_by_page,
+        offset: (this.product_by_page * this.current_page) - this.product_by_page,
         limit: this.product_by_page,
         filter: this.filter
       };
@@ -141,7 +142,6 @@ export default {
       this.$http.post(this.$root.getCurrentPath() + "/getProducts", data, {headers: headers}).then(
         function(response) {  // Success
           this.products = response.data;
-          console.log(this.products);
           this.refreshPaging();
         },
         function(response) {  // Error
@@ -182,6 +182,11 @@ export default {
     /* OPEN: The product updater modal with the passed product */
     openProductUpdaterModal: function (product) {
       EventBus.$emit("productModal_updater", product);
+    },
+
+    /* OPEN: The product deleter modal with the passed product */
+    openProductDeleterModal: function (product) {
+      EventBus.$emit("productModal_deleter", product);
     },
 
     /* DOWNLOAD: All products in a .csv file */

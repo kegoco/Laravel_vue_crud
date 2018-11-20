@@ -24,6 +24,7 @@ Vue.component('products-modals', require('./components/ProductsModals.vue'));
 Vue.component('product-reader', require('./components/products_modals/ProductReader_Modal.vue'));
 Vue.component('product-updater', require('./components/products_modals/ProductUpdater_Modal.vue'));
 Vue.component('product-creator', require('./components/products_modals/ProductCreator_Modal.vue'));
+Vue.component('product-deleter', require('./components/products_modals/ProductDeleter_Modal.vue'));
 
 Vue.component('loading-screen-button', require('./components/LoadingScreenButton.vue'));
 

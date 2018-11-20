@@ -25004,6 +25004,7 @@ Vue.component('products-modals', __webpack_require__(46));
 Vue.component('product-reader', __webpack_require__(49));
 Vue.component('product-updater', __webpack_require__(52));
 Vue.component('product-creator', __webpack_require__(55));
+Vue.component('product-deleter', __webpack_require__(71));
 
 Vue.component('loading-screen-button', __webpack_require__(58));
 
@@ -49100,10 +49101,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     /* GET: A specify range of products */
     loadProducts: function loadProducts(page) {
-      if (page != undefined) this.current_page = page;
+      if (page != undefined && page != null) this.current_page = page;
+      if (this.current_page > this.total_pages) this.current_page = this.total_pages; // It check if the last page has been left to exist
 
       var data = {
-        offset: this.product_by_page * page - this.product_by_page,
+        offset: this.product_by_page * this.current_page - this.product_by_page,
         limit: this.product_by_page,
         filter: this.filter
       };
@@ -49114,7 +49116,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.$http.post(this.$root.getCurrentPath() + "/getProducts", data, { headers: headers }).then(function (response) {
         // Success
         this.products = response.data;
-        console.log(this.products);
         this.refreshPaging();
       }, function (response) {
         // Error
@@ -49154,6 +49155,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     /* OPEN: The product updater modal with the passed product */
     openProductUpdaterModal: function openProductUpdaterModal(product) {
       __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$emit("productModal_updater", product);
+    },
+
+    /* OPEN: The product deleter modal with the passed product */
+    openProductDeleterModal: function openProductDeleterModal(product) {
+      __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$emit("productModal_deleter", product);
     },
 
     /* DOWNLOAD: All products in a .csv file */
@@ -49354,9 +49360,18 @@ var render = function() {
                   [_vm._v("Update")]
                 ),
                 _vm._v(" "),
-                _c("a", { staticClass: "btn btn-danger text-light" }, [
-                  _vm._v("Delete")
-                ])
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn btn-danger text-light",
+                    on: {
+                      click: function($event) {
+                        _vm.openProductDeleterModal(product)
+                      }
+                    }
+                  },
+                  [_vm._v("Delete")]
+                )
               ])
             ])
           })
@@ -49422,24 +49437,29 @@ var render = function() {
         2
       ),
       _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-success", on: { click: _vm.downloadProducts } },
-        [
-          !this.$root.isLoading
-            ? _c("span", [_vm._v("Download products")])
-            : _vm._e(),
-          _vm._v(" "),
-          this.$root.isLoading
-            ? _c("span", [_vm._v("Downloading products")])
-            : _vm._e(),
-          _vm._v(" "),
-          this.$root.isLoading
-            ? _c("loading-screen-button", { staticClass: "d-inline" })
-            : _vm._e()
-        ],
-        1
-      ),
+      _vm.products.length > 0
+        ? _c(
+            "button",
+            {
+              staticClass: "btn btn-success",
+              on: { click: _vm.downloadProducts }
+            },
+            [
+              !this.$root.isLoading
+                ? _c("span", [_vm._v("Download products")])
+                : _vm._e(),
+              _vm._v(" "),
+              this.$root.isLoading
+                ? _c("span", [_vm._v("Downloading products")])
+                : _vm._e(),
+              _vm._v(" "),
+              this.$root.isLoading
+                ? _c("loading-screen-button", { staticClass: "d-inline" })
+                : _vm._e()
+            ],
+            1
+          )
+        : _vm._e(),
       _vm._v(" "),
       _c("products-modals")
     ],
@@ -49541,6 +49561,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {// INIT
@@ -49570,7 +49593,9 @@ var render = function() {
       _vm._v(" "),
       _c("product-creator"),
       _vm._v(" "),
-      _c("product-updater")
+      _c("product-updater"),
+      _vm._v(" "),
+      _c("product-deleter")
     ],
     1
   )
@@ -50923,6 +50948,288 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 62 */,
+/* 63 */,
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */,
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(72)
+/* template */
+var __vue_template__ = __webpack_require__(73)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/products_modals/ProductDeleter_Modal.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-76ff5142", Component.options)
+  } else {
+    hotAPI.reload("data-v-76ff5142", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__event_bus_js__ = __webpack_require__(3);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+//   https://vuejs.org/v2/examples/modal.html
+//   https://vuejsexamples.com/tag/modal/
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    created: function created() {
+        var _this = this;
+
+        // INIT
+        __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$on("productModal_deleter", function (product) {
+            _this.message_object = undefined;
+            _this.opened_modal = true;
+            _this.product = {
+                product_id: product.product_id,
+                product_name: product.product_name
+            };
+        });
+    },
+    data: function data() {
+        // VARS
+        return {
+            product: {
+                product_id: 0,
+                product_name: ""
+            },
+
+            message_object: undefined,
+
+            opened_modal: false
+        };
+    },
+
+    methods: { // METHODS
+        deleteProduct: function deleteProduct() {
+            var data = {
+                product_id: this.product.product_id
+            };
+            var headers = {
+                "X-CSRF-TOKEN": this.$root.token
+            };
+
+            this.$http.post(this.$root.getCurrentPath() + "/deleteProduct", data, { headers: headers }).then(function (response) {
+                // Success
+                if (response.data.error == undefined) {
+                    // Update the product view
+                    __WEBPACK_IMPORTED_MODULE_0__event_bus_js__["a" /* EventBus */].$emit("refreshProductTable");
+                    this.product = undefined;
+
+                    // Show success message
+                    this.message_object = {
+                        type: "Success",
+                        message: "The product was deleted successfully!",
+                        color: "text-success"
+                    };
+                } else {
+                    // Show error message
+                    this.message_object = {
+                        type: "Warning",
+                        message: response.data.error,
+                        color: "text-danger"
+                    };
+                }
+            }, function (response) {
+                // Error
+                console.error(response);
+            });
+        }
+    }
+});
+
+/***/ }),
+/* 73 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _vm.opened_modal
+    ? _c(
+        "transition",
+        {
+          attrs: { name: "modal" },
+          on: {
+            close: function($event) {
+              _vm.opened_modal = false
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "modal-mask" }, [
+            _c("div", { staticClass: "modal-wrapper" }, [
+              _c("form", { staticClass: "modal-container" }, [
+                _c("div", { staticClass: "modal-header" }, [
+                  _c("h3", [_vm._v("Delete a product")])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _vm.product != undefined
+                    ? _c("div", [
+                        _c("span", [
+                          _vm._v(
+                            'Do you want to delete "' +
+                              _vm._s(_vm.product.product_name) +
+                              '"?'
+                          )
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.message_object != undefined
+                    ? _c("div", [
+                        _c("span", { class: _vm.message_object.color }, [
+                          _c("b", [
+                            _vm._v(_vm._s(_vm.message_object.type) + ":")
+                          ]),
+                          _vm._v(" " + _vm._s(_vm.message_object.message))
+                        ])
+                      ])
+                    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _vm.product != undefined
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "modal-default-button btn btn-success",
+                          attrs: { type: "submit" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.deleteProduct($event)
+                            }
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                        Delete\n                    "
+                          )
+                        ]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "modal-default-button btn btn-danger",
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.opened_modal = false
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                        Close\n                    "
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ])
+        ]
+      )
+    : _vm._e()
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-76ff5142", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

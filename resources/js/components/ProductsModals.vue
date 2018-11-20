@@ -8,6 +8,9 @@
 
         <!-- PRODUCT UPDATER MODAL -->
         <product-updater></product-updater>
+
+        <!-- PRODUCT DELETER MODAL -->
+        <product-deleter></product-deleter>
     </div>
 </template>
 
